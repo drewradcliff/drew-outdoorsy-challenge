@@ -8,10 +8,7 @@ export const getRentals = async (
   offset: number
 ) => {
   const res = await axios.get(
-    `${BASE_URL}/rentals?filter[keywords]=${keywords}&page[limit]=${limit}&page[offset]=${offset}`,
-    {
-      headers: {},
-    }
+    `${BASE_URL}/rentals?filter[keywords]=${keywords}&page[limit]=${limit}&page[offset]=${offset}`
   );
   return res.data;
 };
