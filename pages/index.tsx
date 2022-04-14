@@ -1,19 +1,28 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { getRentals } from "../apis";
 import Item from "../components/Item";
 
 const Home: NextPage = () => {
   const [search, setSearch] = useState("");
-  const { data, isLoading } = useQuery("rentals", () =>
-    getRentals("trailer", 8, 8)
+  const [alert, setAlert] = useState("");
+  const { data, isLoading } = useQuery(["rentals", search], () =>
+    getRentals(search, 8, 8)
   );
 
   const getImageURL = (id: string) => {
-    return data.included.find((item: any) => item.id === id).attributes.url;
+    return data.included.find((item: any) => item.id === id)?.attributes?.url;
   };
+
+  useEffect(() => {
+    if (isLoading) {
+      setAlert("Loading...");
+    } else if (data.data.length === 0) {
+      setAlert("No Results");
+    }
+  }, [isLoading, data]);
 
   return (
     <div>
@@ -28,16 +37,16 @@ const Home: NextPage = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
-        {!isLoading ? (
+        {!isLoading && data?.data.length ? (
           data?.data.map((item: any) => (
             <Item
               key={item.id}
-              url={getImageURL(item.relationships.primary_image.data.id)}
-              text={item.attributes.name}
+              url={getImageURL(item.relationships?.primary_image?.data?.id)}
+              text={item.attributes?.name}
             />
           ))
         ) : (
-          <>Loading...</>
+          <p className="text-center italic mt-4">{alert}</p>
         )}
       </main>
     </div>
