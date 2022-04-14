@@ -36,6 +36,7 @@ const Home: NextPage = () => {
           className="border rounded-lg min-w-full text-lg p-1"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search"
         />
         {!isLoading && data?.data.length ? (
           data?.data.map((item: any) => (
